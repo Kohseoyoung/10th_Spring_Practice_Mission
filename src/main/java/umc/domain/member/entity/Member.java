@@ -22,7 +22,7 @@ public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id", nullable = false)
-    private Long member_id;
+    private Long id;
 
     @Column(name = "log_id", nullable = false, length = 50)
     private String log_id;
@@ -30,7 +30,7 @@ public class Member extends BaseEntity {
     @Column(name = "email", nullable = false, length = 50)
     private String email;
 
-    @Column(name = "password", nullable = false, length = 255)
+    @Column(name = "password", nullable = false, length = 250)
     private String password;
 
     @Column(name = "name", nullable = false, length = 20)

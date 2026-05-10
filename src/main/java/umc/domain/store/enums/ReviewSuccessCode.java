@@ -7,9 +7,9 @@ import umc.global.apiPayload.code.BaseSuccessCode;
 
 @Getter
 @RequiredArgsConstructor
-public enum StoreSuccessCode implements BaseSuccessCode {
+public enum ReviewSuccessCode implements BaseSuccessCode {
 
-    OK(HttpStatus.OK, "STORE200_1", "성공적으로 가게를 조회했습니다.");
+    OK(HttpStatus.OK, "REVIEW200_1", "성공적으로 리뷰를 조회했습니다.");
 
     private final HttpStatus status;
     private final String code;

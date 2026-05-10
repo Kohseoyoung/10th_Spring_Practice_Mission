@@ -4,13 +4,21 @@ import lombok.Builder;
 
 public class StoreResDTO {
     @Builder
-    public record GetInfo(
+    public record GetStoreInfo(
             String store_nm,
             String region_nm,
             String open_dt,
-            String close_dt,
-            String chg_dt,
-            String chg_tm
+            String close_dt
     ){}
+
+    @Builder
+    public record GetReviewInfo(
+            String review_text,
+            String star_point,
+            String img_id,
+            String member_id,
+            String store_id
+    ){}
+
 
 }

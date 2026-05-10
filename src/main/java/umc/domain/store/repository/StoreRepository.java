@@ -5,3 +5,4 @@ import umc.domain.store.entity.Store;
 
 public interface StoreRepository extends JpaRepository<Store, Long>{
 }
+
