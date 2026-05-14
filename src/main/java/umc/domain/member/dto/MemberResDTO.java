@@ -8,7 +8,8 @@ import umc.domain.member.enums.Status;
 public class MemberResDTO {
 
     @Builder
-    public record GetInfo(
+    public record GetMember(
+            Long member_id,
             String log_id,
             String email,
             String password,

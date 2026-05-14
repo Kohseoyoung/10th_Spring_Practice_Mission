@@ -1,17 +1,19 @@
 package umc.domain.member.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import umc.domain.member.converter.MemberConverter;
 import umc.domain.member.dto.MemberReqDTO;
 import umc.domain.member.dto.MemberResDTO;
 import umc.domain.member.entity.Member;
-import umc.domain.member.enums.Gender;
-import umc.domain.member.enums.Org_cd;
-import umc.domain.member.enums.Status;
-import umc.domain.member.exception.MemberException;
-import umc.domain.member.exception.code.MemberErrorCode;
 import umc.domain.member.repository.MemberRepository;
+
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -19,30 +21,47 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    public MemberResDTO.GetInfo getInfo(MemberReqDTO.GetInfo dto) {
-        Long memberId = dto.member_id();
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
-        return MemberConverter.toGetInfo(member);
+    // 멤버 생성
+    @Transactional
+    public Void createMember(
+            MemberReqDTO.CreateMember dto
+    ){
+        // 멤버 생성
+        Member member = MemberConverter.toMember(dto);
+
+        // 멤버 DB 저장
+        memberRepository.save(member);
+
+        return null;
     }
 
-    public void createMember() {
-        Member member = Member.builder()
-                .log_id("user123")
-                .email("test@gmail.com")
-                .password("1234")
-                .name("홍길동")
-                .gender(Gender.MALE)
-                .birth("19990101")
-                .post("123456")
-                .add1("서울시 강남구")
-                .add2("101호")
-                .phone("01012345678")
-                .point(0)
-                .status(Status.ACTIVE)
-                .org_cd(Org_cd.GOOGLE)
-                .build();
+    public List<MemberResDTO.GetMember> getMembers(
+            Integer pageSize,
+            Integer pageNumber,
+            String sort
+    ){
+        // 정렬 정보 생성
+        Sort sortInfo;
+        if(sort != null){
+            if(sort.equalsIgnoreCase("asc")){
+                sortInfo = Sort.by("id").ascending();
+            } else if(sort.equalsIgnoreCase("desc")){
+                sortInfo = Sort.by("id").descending();
+            } else {
+                sortInfo = Sort.by(sort); // 컬럼명으로 정렬
+            }
+        } else {
+            sortInfo = Sort.by("id").descending();
+        }
 
-        memberRepository.save(member); // ← 여기서 INSERT 실행
+        // 페이지 정보들을 PageRequest로 만들기
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sortInfo);
+
+        // 가게 내 아이디 조회
+        Page<Member> memberList = memberRepository.findAll(pageRequest);
+
+
+        // 미션들 응답 DTO로 포장하기
+        return memberList.map(MemberConverter::toGetMember).getContent();
     }
 }
